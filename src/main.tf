@@ -6,6 +6,7 @@ locals {
   prefix              = "arw"
   org_id              = var.gcp_org_id
   gcp_billing_account = var.gcp_billing_account
+  github_owner        = "Arrow-air"
   repo_name           = "tf-gcp-organization"
 
   projects      = module.vars.merged.projects
@@ -63,12 +64,14 @@ resource "google_iam_workload_identity_pool" "map" {
 module "automation" {
   for_each = module.project.project_map
 
-  source = "./modules/automation-setup"
+  source  = "Arrow-air/automation-setup/google"
+  version = "~> 0.1"
 
-  repo_name = local.repo_name
-  prefix    = local.prefix
-  owner     = local.owner
-  region    = local.region
+  github_owner = local.github_owner
+  repo_name    = local.repo_name
+  prefix       = local.prefix
+  owner        = local.owner
+  region       = local.region
 
   environment             = local.projects[each.key].environment
   project                 = local.projects[each.key].project
